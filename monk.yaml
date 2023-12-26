@@ -1,0 +1,38 @@
+namespace: svelte-starter-2
+
+svelte-frontend:
+  defines: runnable
+  metadata:
+    name: svelte-frontend
+    description: A Svelte frontend application with Vite build setup.
+    icon: https://emojiapi.dev/api/v1/robot.svg
+  containers:
+    svelte-frontend:
+      image: env-4260.registry.local/svelte-frontend:main-2c67e71
+      build: .
+      dockerfile: Dockerfile.svelte-frontend
+  services:
+    vite-dev-server:
+      description: Vite development server for the Svelte frontend application
+      container: svelte-frontend
+      port: 3000
+      host-port: 3000
+      publish: true
+      protocol: tcp
+  connections: {}
+  variables:
+    vite-api-endpoint:
+      env: VITE_API_ENDPOINT
+      type: string
+      value: http://localhost:3000/api
+      description: The API endpoint the frontend service will connect to.
+    api-secret:
+      env: API_SECRET
+      type: string
+      value: '1234'
+      description: A secret key for the API, should be kept confidential.
+
+stack:
+  defines: group
+  members:
+    - svelte-starter-2/svelte-frontend
