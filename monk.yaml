@@ -1,0 +1,51 @@
+namespace: svelte-starter-2
+
+my-space-app-frontend:
+  defines: runnable
+  metadata:
+    name: my-space-app-frontend
+    description: Frontend service for the Svelte Starter SPA.
+    icon: https://emojiapi.dev/api/v1/globe_with_meridians.svg
+  containers:
+    my-space-app-frontend:
+      image: env-4922.registry.local/my-space-app-frontend:main-dbxja0
+      build: .
+      dockerfile: Dockerfile.my-space-app-frontend
+  services:
+    http-server:
+      description: Port for serving the frontend application over HTTP.
+      container: my-space-app-frontend
+      port: 3000
+      host-port: 3000
+      publish: true
+      protocol: tcp
+  connections: {}
+  variables:
+    api-endpoint:
+      env: API_ENDPOINT
+      type: string
+      value: http://localhost:3000/api
+      description: API endpoint for the frontend service to connect to.
+    api-secret:
+      env: API_SECRET
+      type: string
+      value: '1234'
+      description: Secret key for the API.
+    vite-api-endpoint:
+      env: VITE_API_ENDPOINT
+      type: string
+      value: http://localhost:3000/api
+      description: >-
+        Environment variable used within the Svelte app to define the API
+        endpoint.
+
+stack:
+  defines: group
+  members:
+    - svelte-starter-2/my-space-app-frontend
+  metadata:
+    name: my-space-app
+    description: >-
+      A Svelte Starter single-page application with Vite, TailwindCSS,
+      Flowbite-Svelte, and Svelte-Spa-Router for rapid development.
+    icon: https://emojiapi.dev/api/v1/globe_with_meridians.svg

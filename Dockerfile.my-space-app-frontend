@@ -1,0 +1,29 @@
+# Use a Node.js base image to build the frontend service
+FROM node:16-alpine as build-stage
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN npm install --global pnpm && pnpm install
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the app
+RUN pnpm run build
+
+# Use a lightweight base image for the production stage
+FROM nginx:stable-alpine as production-stage
+
+# Copy the built assets from the build stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+# Expose port 3000 for the service
+EXPOSE 3000
+
+# Start Nginx and serve the application
+CMD ["nginx", "-g", "daemon off;"]
